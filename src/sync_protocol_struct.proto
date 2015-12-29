@@ -10,46 +10,38 @@ enum message_type_t {
     SYNC                  = 8;
 }
 
-message sync_agent_id_t {
-    required uint64 user_id = 1;
-    required string agent_key = 2;
-}
-
-message sync_session_id_t {
+message subscribe_req {
     required uint64 user_id = 1;
     required string session_key = 2;
 }
 
-message sync_subscribe_req_t {
-    required sync_session_id_t session_id = 1;
-}
-
-message sync_subscribe_rep_t {
+message subscribe_rep {
     required uint32 code = 1;
 }
 
-message sync_unsubscribe_req_t {
-    required sync_session_id_t session_id = 1;
+message unsubscribe_req {
+    required uint64 user_id = 1;
+    required string session_key = 2;
 }
 
-message sync_client_heartbeat_t {
+message client_heartbeat {
 }
 
-message sync_server_heartbeat_t {
+message server_heartbeat {
 }
 
-message sync_msg_t {
+message event {
     required uint64 id = 1;
     required bytes payload = 2;
     required uint32 date_added = 3;
 }
 
-message sync_from_t {
+message sync_from {
     required uint64 from = 1;
     required uint64 limit = 2;
 }
 
-message sync_t {
+message sync {
     required uint64 latest_id = 1;
-    repeated sync_msg_t msgs = 2;
+    repeated event events = 2;
 }
