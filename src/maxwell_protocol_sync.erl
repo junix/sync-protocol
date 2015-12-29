@@ -7,6 +7,7 @@
   unpack/1,
   peek/1,
   build_subscribe_req/2,
+
   build_subscribe_rep/2,
 
   build_sync_from/2,
