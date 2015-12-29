@@ -9,7 +9,7 @@
   build_subscribe_req/2,
   build_subscribe_rep/1,
   build_sync_from/2,
-  build_sync/2
+  build_sync_data/2
 ]).
 
 %% =========================================================
@@ -29,16 +29,16 @@ unpack(<<IntType:8, Rest/binary>>) ->
   decode_struct(AtomType, Rest).
 
 build_subscribe_req(UserId,SessionKey) ->
-  pack({subscribe_req,UserId, SessionKey}).
+  pack({subscribe_req_t,UserId, SessionKey}).
 
 build_subscribe_rep(Code) ->
-  pack({subscribe_rep,Code}).
+  pack({subscribe_rep_t,Code}).
 
 build_sync_from(FromId, Limit) ->
-  pack({sync_from,FromId,Limit}).
+  pack({sync_from_t,FromId,Limit}).
 
-build_sync(NewId, Messages) ->
-  pack({sync,NewId,Messages}).
+build_sync_data(NewId, Messages) ->
+  pack({sync_data_t,NewId,Messages}).
 
 %% =========================================================
 %% Internal functions
@@ -58,41 +58,41 @@ encode_struct(Record) ->
 decode_struct(AtomType, Encoded) ->
   sync_protocol_struct_pb:decode(AtomType, Encoded).
 
-atom_to_enum(subscribe_req    ) -> 'SYNC_SUBSCRIBE_REQ'    ;
-atom_to_enum(subscribe_rep    ) -> 'SYNC_SUBSCRIBE_REP'    ;
-atom_to_enum(unsubscribe      ) -> 'SYNC_UNSUBSCRIBE'      ;
-atom_to_enum(client_heartbeat ) -> 'SYNC_CLIENT_HEARTBEAT' ;
-atom_to_enum(server_heartbeat ) -> 'SYNC_SERVER_HEARTBEAT' ;
-atom_to_enum(sync_from        ) -> 'SYNC_FROM'             ;
-atom_to_enum(sync             ) -> 'SYNC'                  .
+atom_to_enum(subscribe_req_t           ) -> 'SYNC_SUBSCRIBE_REQ'      ;
+atom_to_enum(subscribe_rep_t           ) -> 'SYNC_SUBSCRIBE_REP'      ;
+atom_to_enum(unsubscribe_t             ) -> 'SYNC_UNSUBSCRIBE'        ;
+atom_to_enum(client_heartbeat_t        ) -> 'SYNC_CLIENT_HEARTBEAT'   ;
+atom_to_enum(server_heartbeat_t        ) -> 'SYNC_SERVER_HEARTBEAT'   ;
+atom_to_enum(sync_from_t               ) -> 'SYNC_FROM'               ;
+atom_to_enum(sync_data_t               ) -> 'SYNC_DATA'               .
 
-enum_to_atom('SYNC_SUBSCRIBE_REQ'   ) -> subscribe_req     ;
-enum_to_atom('SYNC_SUBSCRIBE_REP'   ) -> subscribe_rep     ;
-enum_to_atom('SYNC_UNSUBSCRIBE'     ) -> unsubscribe       ;
-enum_to_atom('SYNC_CLIENT_HEARTBEAT') -> client_heartbeat  ;
-enum_to_atom('SYNC_SERVER_HEARTBEAT') -> server_heartbeat  ;
-enum_to_atom('SYNC_FROM'            ) -> sync_from         ;
-enum_to_atom('SYNC'                 ) -> sync              .
+enum_to_atom('SYNC_SUBSCRIBE_REQ'    ) -> subscribe_req_t             ;
+enum_to_atom('SYNC_SUBSCRIBE_REP'    ) -> subscribe_rep_t             ;
+enum_to_atom('SYNC_UNSUBSCRIBE'      ) -> unsubscribe_t               ;
+enum_to_atom('SYNC_CLIENT_HEARTBEAT' ) -> client_heartbeat_t          ;
+enum_to_atom('SYNC_SERVER_HEARTBEAT' ) -> server_heartbeat_t          ;
+enum_to_atom('SYNC_FROM'             ) -> sync_from_t                 ;
+enum_to_atom('SYNC_DATA'             ) -> sync_data_t                 .
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 
 x01_test() ->
   Bin = iolist_to_binary(build_subscribe_req(1,"ssxx")),
-  ?assertEqual(unpack(Bin), {subscribe_req,1,"ssxx"}).
+  ?assertEqual(unpack(Bin), {subscribe_req_t,1,"ssxx"}).
 
 x02_test() ->
-  R = [{event, 1, <<"hello">>, 234}, {event, 2, <<"world">>, 789}],
-  G = iolist_to_binary(sync_protocol:build_sync(123, R)),
+  R = [{sync_event_t, 1, <<"hello">>, 234}, {sync_event_t, 2, <<"world">>, 789}],
+  G = iolist_to_binary(sync_protocol:build_sync_data(123, R)),
   D = sync_protocol:unpack(G),
-  ?assertEqual(D, {sync, 123,
-    [{event, 1, <<"hello">>, 234},
-     {event, 2, <<"world">>, 789}]}
+  ?assertEqual(D, {sync_data_t, 123,
+    [{sync_event_t, 1, <<"hello">>, 234},
+     {sync_event_t, 2, <<"world">>, 789}]}
   ).
 
 x03_test() ->
   Bin = iolist_to_binary(build_subscribe_req(1,"ssxx")),
-  ?assertEqual(peek(Bin), subscribe_req).
+  ?assertEqual(peek(Bin), subscribe_req_t).
 
 
 -endif.

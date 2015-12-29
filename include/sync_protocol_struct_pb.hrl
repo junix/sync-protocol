@@ -1,60 +1,61 @@
--ifndef(SUBSCRIBE_REQ_PB_H).
--define(SUBSCRIBE_REQ_PB_H, true).
--record(subscribe_req, {
+-ifndef(SUBSCRIBE_REQ_T_PB_H).
+-define(SUBSCRIBE_REQ_T_PB_H, true).
+-record(subscribe_req_t, {
     user_id = erlang:error({required, user_id}),
     session_key = erlang:error({required, session_key})
 }).
 -endif.
 
--ifndef(SUBSCRIBE_REP_PB_H).
--define(SUBSCRIBE_REP_PB_H, true).
--record(subscribe_rep, {
-    code = erlang:error({required, code})
+-ifndef(SUBSCRIBE_REP_T_PB_H).
+-define(SUBSCRIBE_REP_T_PB_H, true).
+-record(subscribe_rep_t, {
+    errcode = erlang:error({required, errcode}),
+    errmsg = erlang:error({required, errmsg})
 }).
 -endif.
 
--ifndef(UNSUBSCRIBE_REQ_PB_H).
--define(UNSUBSCRIBE_REQ_PB_H, true).
--record(unsubscribe_req, {
+-ifndef(UNSUBSCRIBE_T_PB_H).
+-define(UNSUBSCRIBE_T_PB_H, true).
+-record(unsubscribe_t, {
     user_id = erlang:error({required, user_id}),
     session_key = erlang:error({required, session_key})
 }).
 -endif.
 
--ifndef(CLIENT_HEARTBEAT_PB_H).
--define(CLIENT_HEARTBEAT_PB_H, true).
--record(client_heartbeat, {
+-ifndef(CLIENT_HEARTBEAT_T_PB_H).
+-define(CLIENT_HEARTBEAT_T_PB_H, true).
+-record(client_heartbeat_t, {
     
 }).
 -endif.
 
--ifndef(SERVER_HEARTBEAT_PB_H).
--define(SERVER_HEARTBEAT_PB_H, true).
--record(server_heartbeat, {
+-ifndef(SERVER_HEARTBEAT_T_PB_H).
+-define(SERVER_HEARTBEAT_T_PB_H, true).
+-record(server_heartbeat_t, {
     
 }).
 -endif.
 
--ifndef(EVENT_PB_H).
--define(EVENT_PB_H, true).
--record(event, {
+-ifndef(SYNC_EVENT_T_PB_H).
+-define(SYNC_EVENT_T_PB_H, true).
+-record(sync_event_t, {
     id = erlang:error({required, id}),
     payload = erlang:error({required, payload}),
-    date_added = erlang:error({required, date_added})
+    created_at = erlang:error({required, created_at})
 }).
 -endif.
 
--ifndef(SYNC_FROM_PB_H).
--define(SYNC_FROM_PB_H, true).
--record(sync_from, {
+-ifndef(SYNC_FROM_T_PB_H).
+-define(SYNC_FROM_T_PB_H, true).
+-record(sync_from_t, {
     from = erlang:error({required, from}),
-    limit = erlang:error({required, limit})
+    limit
 }).
 -endif.
 
--ifndef(SYNC_PB_H).
--define(SYNC_PB_H, true).
--record(sync, {
+-ifndef(SYNC_DATA_T_PB_H).
+-define(SYNC_DATA_T_PB_H, true).
+-record(sync_data_t, {
     latest_id = erlang:error({required, latest_id}),
     events = []
 }).
