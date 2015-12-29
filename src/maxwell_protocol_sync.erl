@@ -7,7 +7,8 @@
   unpack/1,
   peek/1,
   build_subscribe_req/2,
-  build_subscribe_rep/1,
+  build_subscribe_rep/2,
+
   build_sync_from/2,
   build_sync_data/2
 ]).
@@ -31,8 +32,8 @@ unpack(<<IntType:8, Rest/binary>>) ->
 build_subscribe_req(UserId,SessionKey) ->
   pack({subscribe_req_t,UserId, SessionKey}).
 
-build_subscribe_rep(Code) ->
-  pack({subscribe_rep_t,Code}).
+build_subscribe_rep(Code,ErrMsg) ->
+  pack({subscribe_rep_t,Code, ErrMsg}).
 
 build_sync_from(FromId, Limit) ->
   pack({sync_from_t,FromId,Limit}).
