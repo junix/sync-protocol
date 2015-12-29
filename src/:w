@@ -1,4 +1,4 @@
-package maxwell.protocol.sync;
+package maxwell.sync.protocol;
 
 enum message_type_t {
     SYNC_SUBSCRIBE_REQ    = 1;
