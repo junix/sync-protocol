@@ -1,0 +1,56 @@
+package sync.protocol;
+
+enum message_type_t {
+    SYNC_SUBSCRIBE_REQ    = 1;
+    SYNC_SUBSCRIBE_REP    = 2;
+    SYNC_UNSUBSCRIBE_REQ  = 3;
+    SYNC_CLIENT_HEARTBEAT = 4;
+    SYNC_SERVER_HEARTBEAT = 5;
+    SYNC_FROM             = 7;
+    SYNC                  = 8;
+    SYNC_MSG              = 9;
+}
+
+message sync_agent_id_t {
+    required uint64 user_id = 1;
+    required string agent_key = 2;
+}
+
+message sync_session_id_t {
+    required uint64 user_id = 1;
+    required string session_key = 2;
+}
+
+message sync_subscribe_req_t {
+    required sync_session_id_t session_id = 1;
+}
+
+message sync_subscribe_rep_t {
+    required uint32 code = 1;
+}
+
+message sync_unsubscribe_req_t {
+    required sync_session_id_t session_id = 1;
+}
+
+message sync_client_heartbeat_t {
+}
+
+message sync_server_heartbeat_t {
+}
+
+message sync_msg_t {
+    required uint64 id = 1;
+    required bytes payload = 2;
+    required uint32 date_added = 3;
+}
+
+message sync_from_t {
+    required uint64 from = 1;
+    required uint64 limit = 2;
+}
+
+message sync_t {
+    required uint64 latest_id = 1;
+    repeated sync_msg_t msgs = 2;
+}
