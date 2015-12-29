@@ -5,6 +5,7 @@
 -export([
   pack/1,
   unpack/1,
+  peek/1,
   build_subscribe_req/2,
   build_subscribe_rep/1,
   build_sync_from/2,
@@ -14,6 +15,9 @@
 %% =========================================================
 %% API implementations
 %% =========================================================
+
+peek(<<IntType:8, _Rest/binary>>) ->
+  decode_type(IntType).
 
 pack(Record) ->
   EncodedType = encode_type(element(1, Record)),
@@ -72,6 +76,7 @@ enum_to_atom('SYNC'                 ) -> sync_t                   .
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
+
 x01_test() ->
   Bin = iolist_to_binary(build_subscribe_req(1,"ssxx")),
   ?assertEqual(unpack(Bin), {sync_subscribe_req_t,{sync_session_id_t,1,"ssxx"}}).
@@ -84,6 +89,11 @@ x02_test() ->
     [{sync_msg_t, 1, <<"hello">>, 234},
       {sync_msg_t, 2, <<"world">>, 789}]}
   ).
+
+x03_test() ->
+  Bin = iolist_to_binary(build_subscribe_req(1,"ssxx")),
+  ?assertEqual(peek(Bin), sync_subscribe_req_t).
+
 
 -endif.
 
