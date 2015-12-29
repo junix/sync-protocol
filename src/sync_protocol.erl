@@ -2,7 +2,14 @@
 -include("sync_protocol_struct_pb.hrl").
 
 %% APIs
--export([pack/1,unpack/1]).
+-export([
+  pack/1,
+  unpack/1,
+  build_subscribe_req/2,
+  build_subscribe_rep/1,
+  build_sync_from/2,
+  build_sync/2
+]).
 
 %% =========================================================
 %% API implementations
@@ -17,6 +24,18 @@ unpack(Bin) ->
   <<IntType:8, Encoded/binary>> = Bin,
   AtomType = decode_type(IntType),
   decode_struct(AtomType, Encoded).
+
+build_subscribe_req(UserId,SessionKey) ->
+  pack({sync_subscribe_req_t,{sync_session_id_t,UserId, SessionKey}}).
+
+build_subscribe_rep(Code) ->
+  pack({sync_subscribe_rep_t,Code}).
+
+build_sync_from(FromId, Limit) ->
+  pack({sync_from_t,FromId,Limit}).
+
+build_sync(NewId, Messages) ->
+  pack({sync_t,NewId,Messages}).
 
 %% =========================================================
 %% Internal functions
@@ -56,10 +75,20 @@ enum_to_atom('SYNC'                 ) -> sync_t                   .
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
- x01_test() ->
-        R = {sync_msg_t,1,<<"hv">>,345},
-        Bin = iolist_to_binary(pack(R)),
-        ?assertEqual(unpack(Bin),R).
+x01_test() ->
+  R = {sync_msg_t, 1, <<"hv">>, 345},
+  Bin = iolist_to_binary(pack(R)),
+  ?assertEqual(unpack(Bin), R).
+
+x02_test() ->
+  R = [{sync_msg_t, 1, <<"hello">>, 234}, {sync_msg_t, 2, <<"world">>, 789}],
+  G = iolist_to_binary(sync_protocol:build_sync(123, R)),
+  D = sync_protocol:unpack(G),
+  ?assertEqual(D, {sync_t, 123,
+    [{sync_msg_t, 1, <<"hello">>, 234},
+      {sync_msg_t, 2, <<"world">>, 789}]}
+  ).
+
 -endif.
 
 
