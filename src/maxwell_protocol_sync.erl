@@ -9,6 +9,8 @@
   build_subscribe_req/2,
 
   build_subscribe_rep/2,
+  build_server_heartbeat/0,
+  build_client_heartbeat/0,
 
   build_sync_from/2,
   build_sync_data/2
@@ -35,6 +37,12 @@ build_subscribe_req(UserId,SessionKey) ->
 
 build_subscribe_rep(Code,ErrMsg) ->
   pack({subscribe_rep_t,Code, ErrMsg}).
+
+build_server_heartbeat() ->
+  pack({server_heartbeat_t}).
+
+build_client_heartbeat() ->
+  pack({client_heartbeat_t}).
 
 build_sync_from(FromId, Limit) ->
   pack({sync_from_t,FromId,Limit}).
