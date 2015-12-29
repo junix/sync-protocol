@@ -1,8 +1,8 @@
 %% -*- mode: erlang -*-
 
-{application, sync_protocol,
+{application, maxwell_protocol_sync,
  [
-  {description, "Sync protocol package."},
+  {description, "Sync protocol for maxwell and terminal."},
   {vsn, "1"},
   {registered, []},
   {applications, [

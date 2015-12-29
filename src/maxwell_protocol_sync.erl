@@ -1,5 +1,5 @@
--module(sync_protocol).
--include("sync_protocol_struct_pb.hrl").
+-module(maxwell_protocol_sync).
+-include("maxwell_protocol_sync_struct_pb.hrl").
 
 %% APIs
 -export([
@@ -45,18 +45,18 @@ build_sync_data(NewId, Messages) ->
 %% =========================================================
 encode_type(AtomType) ->
   EnumType = atom_to_enum(AtomType),
-  IntType = sync_protocol_struct_pb:enum_to_int(message_type_t, EnumType),
+  IntType = maxwell_protocol_sync_struct_pb:enum_to_int(message_type_t, EnumType),
   <<IntType:8>>.
 
 decode_type(IntType) ->
-  EnumType = sync_protocol_struct_pb:int_to_enum(message_type_t, IntType),
+  EnumType = maxwell_protocol_sync_struct_pb:int_to_enum(message_type_t, IntType),
   enum_to_atom(EnumType).
 
 encode_struct(Record) ->
-  sync_protocol_struct_pb:encode(Record).
+  maxwell_protocol_sync_struct_pb:encode(Record).
 
 decode_struct(AtomType, Encoded) ->
-  sync_protocol_struct_pb:decode(AtomType, Encoded).
+  maxwell_protocol_sync_struct_pb:decode(AtomType, Encoded).
 
 atom_to_enum(subscribe_req_t           ) -> 'SYNC_SUBSCRIBE_REQ'      ;
 atom_to_enum(subscribe_rep_t           ) -> 'SYNC_SUBSCRIBE_REP'      ;
@@ -83,8 +83,8 @@ x01_test() ->
 
 x02_test() ->
   R = [{sync_event_t, 1, <<"hello">>, 234}, {sync_event_t, 2, <<"world">>, 789}],
-  G = iolist_to_binary(sync_protocol:build_sync_data(123, R)),
-  D = sync_protocol:unpack(G),
+  G = iolist_to_binary(maxwell_protocol_sync:build_sync_data(123, R)),
+  D = maxwell_protocol_sync:unpack(G),
   ?assertEqual(D, {sync_data_t, 123,
     [{sync_event_t, 1, <<"hello">>, 234},
      {sync_event_t, 2, <<"world">>, 789}]}
