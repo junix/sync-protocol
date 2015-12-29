@@ -3,7 +3,7 @@
 compile:
 	rm -f maxwell_protocol
 	./rebar get-deps
-	./rebar compile
+	./rebar compile eu
 
 test: compile
 	./rebar eu

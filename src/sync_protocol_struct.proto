@@ -8,7 +8,6 @@ enum message_type_t {
     SYNC_SERVER_HEARTBEAT = 5;
     SYNC_FROM             = 7;
     SYNC                  = 8;
-    SYNC_MSG              = 9;
 }
 
 message sync_agent_id_t {

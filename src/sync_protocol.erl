@@ -20,10 +20,9 @@ pack(Record) ->
   Encoded = encode_struct(Record),
   [EncodedType | Encoded].
 
-unpack(Bin) ->
-  <<IntType:8, Encoded/binary>> = Bin,
+unpack(<<IntType:8, Rest/binary>>) ->
   AtomType = decode_type(IntType),
-  decode_struct(AtomType, Encoded).
+  decode_struct(AtomType, Rest).
 
 build_subscribe_req(UserId,SessionKey) ->
   pack({sync_subscribe_req_t,{sync_session_id_t,UserId, SessionKey}}).
@@ -60,7 +59,6 @@ atom_to_enum(sync_subscribe_rep_t    ) -> 'SYNC_SUBSCRIBE_REP'    ;
 atom_to_enum(sync_unsubscribe_t      ) -> 'SYNC_UNSUBSCRIBE'      ;
 atom_to_enum(sync_client_heartbeat_t ) -> 'SYNC_CLIENT_HEARTBEAT' ;
 atom_to_enum(sync_server_heartbeat_t ) -> 'SYNC_SERVER_HEARTBEAT' ;
-atom_to_enum(sync_msg_t              ) -> 'SYNC_MSG'              ;
 atom_to_enum(sync_from_t             ) -> 'SYNC_FROM'             ;
 atom_to_enum(sync_t                  ) -> 'SYNC'                  .
 
@@ -69,16 +67,14 @@ enum_to_atom('SYNC_SUBSCRIBE_REP'   ) -> sync_subscribe_rep_t     ;
 enum_to_atom('SYNC_UNSUBSCRIBE'     ) -> sync_unsubscribe_t       ;
 enum_to_atom('SYNC_CLIENT_HEARTBEAT') -> sync_client_heartbeat_t  ;
 enum_to_atom('SYNC_SERVER_HEARTBEAT') -> sync_server_heartbeat_t  ;
-enum_to_atom('SYNC_MSG'             ) -> sync_msg_t               ;
 enum_to_atom('SYNC_FROM'            ) -> sync_from_t              ;
 enum_to_atom('SYNC'                 ) -> sync_t                   .
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 x01_test() ->
-  R = {sync_msg_t, 1, <<"hv">>, 345},
-  Bin = iolist_to_binary(pack(R)),
-  ?assertEqual(unpack(Bin), R).
+  Bin = iolist_to_binary(build_subscribe_req(1,"ssxx")),
+  ?assertEqual(unpack(Bin), {sync_subscribe_req_t,{sync_session_id_t,1,"ssxx"}}).
 
 x02_test() ->
   R = [{sync_msg_t, 1, <<"hello">>, 234}, {sync_msg_t, 2, <<"world">>, 789}],
